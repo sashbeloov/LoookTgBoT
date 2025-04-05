@@ -102,5 +102,12 @@
 #     keyboards = types.ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 #     await message.answer(f"Sizning manzilingiz\n\n{address}📍joylashuvni tasdiqlang yoki qayta yuboring",reply_markup=keyboards)
 #     print(location)
-import random
-print(f"\n<!-- {random.randint(1, 9999)}")
+# import random
+# print(f"\n<!-- {random.randint(1, 9999)}")
+
+# git config --global user.name "sashbeloov"
+# git config --global user.email "beloovsasha23@gmail.com.com"
+# git init
+# gitadd.
+# git commit -m "initial commit"
+# git push -u origin main
