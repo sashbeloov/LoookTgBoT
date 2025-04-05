@@ -30,7 +30,6 @@
 #     )
 
 
-
 # import requests
 #
 # YANDEX_API_KEY = "29c55c81-c803-4265-b908-805befaa28a2"
@@ -103,3 +102,5 @@
 #     keyboards = types.ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 #     await message.answer(f"Sizning manzilingiz\n\n{address}📍joylashuvni tasdiqlang yoki qayta yuboring",reply_markup=keyboards)
 #     print(location)
+import random
+print(f"\n<!-- {random.randint(1, 9999)}")

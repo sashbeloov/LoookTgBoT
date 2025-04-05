@@ -5,6 +5,7 @@ from aiogram.types import message
 import asyncio
 from decimal import Decimal
 from yandex_geocoder import Client
+import random
 
 TOKEN = "8130717585:AAHQk6u8c-4ECbcsHzjUpp2iXTxi6b8cZ-c"
 bot = Bot(token=TOKEN)
@@ -268,11 +269,11 @@ async def check_item(message: types.Message):
 @dp.callback_query()
 async def update_item(callback: types.CallbackQuery):
     user_id = callback.from_user.id
-    print(f"habar keldi: {callback.data}")  # minus_{text} count_{text} plus_{text} basket_{text}
-    info_button,text = callback.data.split("_")
+    print(f"habar keldi: {callback.data}")
+
+    info_button, text = callback.data.split("_")
     count = user_data[user_id]["counter"][0]
     price = user_data[user_id]["counter"][1]
-
 
     if info_button == "plus":
         count += 1
@@ -280,31 +281,31 @@ async def update_item(callback: types.CallbackQuery):
         if count > 1:
             count -= 1
 
+    # ✅ Yangilangan qiymatni saqlash
+    user_data[user_id]["counter"] = [count, price]
+
     button = [
-        [types.InlineKeyboardButton(text=f"➖", callback_data=f"minus_{text}"),
+        [types.InlineKeyboardButton(text="➖", callback_data=f"minus_{text}"),
          types.InlineKeyboardButton(text=f"{count}", callback_data=f"count_{text}"),
-         types.InlineKeyboardButton(text=f"➕", callback_data=f"plus_{text}"), ],
+         types.InlineKeyboardButton(text="➕", callback_data=f"plus_{text}")],
         [types.InlineKeyboardButton(text="📥 Savatga qo'shish", callback_data=f"basket_{text}")],
     ]
-    keyboard = types.InlineKeyboardMarkup(inline_keyboard=button, resize_keyboard=True)
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
 
-    # file_path = f"{item_info[text][3]}"
     caption_text = (
         f"{item_info[text][0]}\n"
         f"{item_info[text][-1]}\n\n"
-        f"\n"
         f"{item_info[text][0]}: {price} x {count} = {price * count}\n"
-        f"Umumiy: {price * count} UZS"
-    )
+        f"Umumiy: {price * count} UZS")
+    caption_text += f"\n\u200b"  # Bu — “Zero-width space” (ko‘rinmas belgi). Telegram caption'ni yangilangan deb hisoblaydi, lekin foydalanuvchiga hech narsa ko‘rinmaydi.
     try:
-        await callback.message.edit_caption(caption=caption_text,reply_markup=keyboard)
+        await callback.message.edit_caption(
+            caption=caption_text,
+            reply_markup=keyboard,
+        )
+
     except Exception as e:
         print(f"Xato: {e}")
-
-
-
-
-
 
 
 async def main():
