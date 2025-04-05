@@ -320,9 +320,41 @@ async def update_item(callback: types.CallbackQuery):
 
 async def basket(message: types.Message):
     user_id = message.from_user.id
-    result = user_data[user_id]["basket"] # {item_name:count}
+    result = user_data[user_id]["basket"] # {'Twins burger tovuqli': 1, 'Paket': 1}
+    print(result)
+    choosed_items = ""
+    all_total = 0
     if result:
-        pass
+        but = [
+            [types.InlineKeyboardButton(text="Buyurtmani tasdiqlash", callback_data="confirm")],
+            [types.InlineKeyboardButton(text="Buyurtmani davom ettirish", callback_data="continue")],
+            [types.InlineKeyboardButton(text="🔄 Tozalash", callback_data="clear")]
+        ]
+
+        for item_name, count in result.items():
+            summa = item_info[item_name][1]
+            summa *= count
+            all_total += summa
+            choosed_items += f"{item_name} x {count} = {summa} \n"
+
+            row = [
+                types.InlineKeyboardButton(text="➖", callback_data=f"minus_{item_name}"),
+                types.InlineKeyboardButton(text=f"{item_name}", callback_data="none"),
+                types.InlineKeyboardButton(text="➕", callback_data=f"plus_{item_name}")
+            ]
+            but.append(row)
+
+        inline_keyboard = types.InlineKeyboardMarkup(inline_keyboard=but)
+
+        reply_buttons = [
+            [types.KeyboardButton(text="⬅️ Orqaga")]
+        ]
+        reply_keyboard = types.ReplyKeyboardMarkup(keyboard=reply_buttons, resize_keyboard=True)
+
+        await message.answer("Savat:", reply_markup=reply_keyboard)
+        await message.answer(f"{choosed_items}\n\nUmumiy: {all_total}", reply_markup=inline_keyboard)
+
+
     else:
         button = [
             [types.KeyboardButton(text="⬅️ Orqaga")]
