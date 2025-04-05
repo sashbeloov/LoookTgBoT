@@ -6,7 +6,7 @@ import asyncio
 from decimal import Decimal
 from yandex_geocoder import Client
 
-TOKEN = "8130717585:AAHS0sptIpqNLd66QzFOWIKV1uXZ9mkWbFc"
+TOKEN = "8130717585:AAHQk6u8c-4ECbcsHzjUpp2iXTxi6b8cZ-c"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
@@ -36,7 +36,7 @@ async def handnle_text(message: types.Message):
     elif message.text == "🍔BURGERLAR":
         await burgers(message)
     elif message.text in item_info:
-        await check_burger(message)
+        await check_item(message)
 
 
     elif message.text == "⬅️ Orqaga":
@@ -218,7 +218,19 @@ async def burgers(message: types.Message):
 
 
 
-async def check_burger(message: types.Message):
+item_info = {
+    "Twins burger mol go'shti":["Twins burger mol go'shti",30000,1,"images/twins-goshtli.jpg",
+    "Mol go‘shtli Twins-Burger – ikkita shirali mol go‘shtli burger bir setda! Tanlangan mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Haqiqiy go‘shtsevarlar uchun! "],
+    "Twins burger tovuqli":["Twins burger tovuqli",39000,1,"images/twins-tovuqli.jpg",
+    "Tovuqli Twins-Burger – bitta emas, ikkita qarsildoq tovuqli burger! Tillarang panirlangan yumshoq tovuq go‘shti, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Tovuqni sevuvchilar uchun ideal tanlov! "],
+    "Paket": ["Paket", 2000, 1,"images/paket.jpg",
+    "Paket пакет "],
+    "Beef longer": ["Beef longer", 30000, 1,"images/beef_longer.jpg",
+    "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
+}
+
+# * Bu funksiya oraqali barch tugmalarning rasmi,nomi,narxi va shunga oxshash ma'lumotlar chiqib keladi * #
+async def check_item(message: types.Message):
     user_id = message.from_user.id
     user_data[user_id]["holat"] = "check_burger"
     text = message.text
@@ -227,11 +239,10 @@ async def check_burger(message: types.Message):
             [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
         ]
         button = [
-            [types.InlineKeyboardButton(text=f"➖", callback_data="minus"),
-            types.InlineKeyboardButton(text=f"{item_info[text][2]}", callback_data=f"count_{item_info[text][2]}"),
-            types.InlineKeyboardButton(text=f"➕", callback_data="plus"),],
-            [types.InlineKeyboardButton(text="📥 Savatga qo'shish", callback_data=f"basket")],
-
+            [types.InlineKeyboardButton(text=f"➖", callback_data=f"minus_{text}"),
+            types.InlineKeyboardButton(text=f"{item_info[text][2]}", callback_data=f"count_{text}"),
+            types.InlineKeyboardButton(text=f"➕", callback_data=f"plus_{text}"),],
+            [types.InlineKeyboardButton(text="📥 Savatga qo'shish", callback_data=f"basket_{text}")],
         ]
         keyboard = types.ReplyKeyboardMarkup(keyboard=but, resize_keyboard=True)
         key = types.InlineKeyboardMarkup(inline_keyboard=button, resize_keyboard=True)
@@ -249,20 +260,49 @@ async def check_burger(message: types.Message):
             photo=types.FSInputFile(path=file_path),
             parse_mode="Markdown",
             reply_markup=key)
+        user_data[user_id]["counter"] = [item_info[text][2], item_info[text][1]]
     else:
         print("Mahsulot topilmadi")
 
 
-item_info = {
-    "Twins burger mol go'shti":["Twins burger mol go'shti",30000,1,"images/twins-goshtli.jpg",
-    "Mol go‘shtli Twins-Burger – ikkita shirali mol go‘shtli burger bir setda! Tanlangan mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Haqiqiy go‘shtsevarlar uchun! "],
-    "Twins burger tovuqli":["Twins burger tovuqli",39000,1,"images/twins-tovuqli.jpg",
-    "Tovuqli Twins-Burger – bitta emas, ikkita qarsildoq tovuqli burger! Tillarang panirlangan yumshoq tovuq go‘shti, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Tovuqni sevuvchilar uchun ideal tanlov! "],
-    "Paket": ["Paket", 2000, 1,"images/paket.jpg",
-    "Paket пакет "],
-    "Beef longer": ["Beef longer", 30000, 1,"images/beef_longer.jpg",
-    "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
-}
+@dp.callback_query()
+async def update_item(callback: types.CallbackQuery):
+    user_id = callback.from_user.id
+    print(f"habar keldi: {callback.data}")  # minus_{text} count_{text} plus_{text} basket_{text}
+    info_button,text = callback.data.split("_")
+    count = user_data[user_id]["counter"][0]
+    price = user_data[user_id]["counter"][1]
+
+
+    if info_button == "plus":
+        count += 1
+    elif info_button == "minus":
+        if count > 1:
+            count -= 1
+
+    button = [
+        [types.InlineKeyboardButton(text=f"➖", callback_data=f"minus_{text}"),
+         types.InlineKeyboardButton(text=f"{count}", callback_data=f"count_{text}"),
+         types.InlineKeyboardButton(text=f"➕", callback_data=f"plus_{text}"), ],
+        [types.InlineKeyboardButton(text="📥 Savatga qo'shish", callback_data=f"basket_{text}")],
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=button, resize_keyboard=True)
+
+    # file_path = f"{item_info[text][3]}"
+    caption_text = (
+        f"{item_info[text][0]}\n"
+        f"{item_info[text][-1]}\n\n"
+        f"\n"
+        f"{item_info[text][0]}: {price} x {count} = {price * count}\n"
+        f"Umumiy: {price * count} UZS"
+    )
+    try:
+        await callback.message.edit_caption(caption=caption_text,reply_markup=keyboard)
+    except Exception as e:
+        print(f"Xato: {e}")
+
+
+
 
 
 
