@@ -4,8 +4,8 @@ from aiogram.filters import Command
 from aiogram.types import message
 import asyncio
 from decimal import Decimal
-from yandex_geocoder import Client
-import random
+# from yandex_geocoder import Client
+# import random
 
 TOKEN = "8130717585:AAHQk6u8c-4ECbcsHzjUpp2iXTxi6b8cZ-c"
 bot = Bot(token=TOKEN)
@@ -47,8 +47,10 @@ async def handnle_text(message: types.Message):
             await order(message)
         elif user_data[user_id]["holat"] == "burgers":
             await check_branch(message)
-        elif user_data[user_id]["holat"] == "check_burger":
+        elif user_data[user_id]["holat"] == "check_item":
             await burgers(message)
+        elif user_data[user_id]["holat"] == "update_item":
+            await check_branch(message)
 
 
 
@@ -57,10 +59,10 @@ async def handnle_text(message: types.Message):
 @dp.message(Command("start"))
 async def start(message: types.Message):
     user_id = message.from_user.id
-    first_name = message.from_user.first_name
-    last_name = message.from_user.last_name
-    username = message.from_user.username
-    photos = await bot.get_user_profile_photos(user_id)
+    # first_name = message.from_user.first_name
+    # last_name = message.from_user.last_name
+    # username = message.from_user.username
+    # photos = await bot.get_user_profile_photos(user_id)
 
     # * RASMNI JONATISH  *
     # if photos.photos:
@@ -70,10 +72,10 @@ async def start(message: types.Message):
     #     await message.answer("Sizda profil rasmi yo‘q.")
 
     user_data[user_id] = {}
-    user_data["first_name"] = f"first_name{first_name}\n"
-    user_data["last_name"] = f"last_name{last_name}\n"
-    user_data["username"] = f"username{username}\n"
-    user_data["photos"] = f"photos{photos}\n"
+    # user_data["first_name"] = f"first_name{first_name}\n"
+    # user_data["last_name"] = f"last_name{last_name}\n"
+    # user_data["username"] = f"username{username}\n"
+    # user_data["photos"] = f"photos{photos}\n"
     button = [
         [types.KeyboardButton(text="🛍 Buyurtma berish")],
         [types.KeyboardButton(text="⚙️ Sozlamalar"), types.KeyboardButton(text="ℹ️ Biz haqimizda")],
@@ -82,7 +84,7 @@ async def start(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(keyboard=button,resize_keyboard=True)
     await message.answer("Buyurtma berishni boshlash uchun 🛍 Buyurtma berish tugmasini bosing \n\nShuningdek, aksiyalarni ko'rishingiz va bizning filiallar bilan tanishishingiz mumkin", reply_markup=keyboard)
     print(user_data)
-    print(photos)
+    # print(photos)
 
 
 
@@ -233,7 +235,7 @@ item_info = {
 # * Bu funksiya oraqali barch tugmalarning rasmi,nomi,narxi va shunga oxshash ma'lumotlar chiqib keladi * #
 async def check_item(message: types.Message):
     user_id = message.from_user.id
-    user_data[user_id]["holat"] = "check_burger"
+    user_data[user_id]["holat"] = "check_item"
     text = message.text
     if text in item_info:
         but = [
@@ -265,21 +267,35 @@ async def check_item(message: types.Message):
     else:
         print("Mahsulot topilmadi")
 
-
+info_item = {}
 @dp.callback_query()
 async def update_item(callback: types.CallbackQuery):
     user_id = callback.from_user.id
-    print(f"habar keldi: {callback.data}")
-
+    user_data[user_id]["holat"] = "update_item"
     info_button, text = callback.data.split("_")
     count = user_data[user_id]["counter"][0]
     price = user_data[user_id]["counter"][1]
+
+    # Tovarning soni,narxi va nomi saqlandi
+    total_price = price * count
+    user_data[user_id]["basket"] = [text, count, total_price]
 
     if info_button == "plus":
         count += 1
     elif info_button == "minus":
         if count > 1:
             count -= 1
+    elif info_button == "basket":
+        if "end_basket" not in info_item:
+            info_item[user_id] = user_data[user_id]["basket"]
+            print(info_item)
+        else:
+            if text in info_item[user_id]:
+                info_item[user_id][1] += user_data[user_id]["basket"][1]
+                info_item[user_id][1] += user_data[user_id]["basket"][2]
+            else:
+                info_item[user_id][1] = user_data[user_id]["basket"][1]
+                info_item[user_id][1] = user_data[user_id]["basket"][2]
 
     # ✅ Yangilangan qiymatni saqlash
     user_data[user_id]["counter"] = [count, price]
@@ -297,13 +313,13 @@ async def update_item(callback: types.CallbackQuery):
         f"{item_info[text][-1]}\n\n"
         f"{item_info[text][0]}: {price} x {count} = {price * count}\n"
         f"Umumiy: {price * count} UZS")
-    caption_text += f"\n\u200b"  # Bu — “Zero-width space” (ko‘rinmas belgi). Telegram caption'ni yangilangan deb hisoblaydi, lekin foydalanuvchiga hech narsa ko‘rinmaydi.
+    caption_text += f"\n\u200b"  # Bu — “Zero-width space” (ko‘rinmas belgi). Telegram caption'ni yangilangan deb hisoblaydi,
+    # lekin foydalanuvchiga hech narsa ko‘rinmaydi.
+
     try:
         await callback.message.edit_caption(
             caption=caption_text,
-            reply_markup=keyboard,
-        )
-
+            reply_markup=keyboard,)
     except Exception as e:
         print(f"Xato: {e}")
 
