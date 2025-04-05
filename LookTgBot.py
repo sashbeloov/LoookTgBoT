@@ -1,11 +1,7 @@
-import aiogram
 from aiogram import types, Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import message
 import asyncio
-from decimal import Decimal
-# from yandex_geocoder import Client
-# import random
 
 TOKEN = "8130717585:AAHQk6u8c-4ECbcsHzjUpp2iXTxi6b8cZ-c"
 bot = Bot(token=TOKEN)
@@ -40,6 +36,10 @@ async def handnle_text(message: types.Message):
         await check_item(message)
     elif message.text == "📥 Savat":
         await basket(message)
+    elif "next_menu" in user_data[user_id]:
+        if user_data[user_id]["choosed_menu"] == "🍔BURGERLAR":
+            await burgers(message)
+
 
 
     elif message.text == "⬅️ Orqaga":
@@ -205,11 +205,10 @@ async def check_branch(message: types.Message):
 list_city = ["Yangli yo'l", "Yunusobod","Maxim Gorkiy","Boulevard","Chilonzor","Beruniy"]
 
 
-
-
 async def burgers(message: types.Message):
     user_id = message.from_user.id
     user_data[user_id]["holat"] = "burgers"
+    user_data[user_id]["choosed_menu"] = message.text
     button = [
         [types.KeyboardButton(text="Interaktiv menu",web_app=types.WebAppInfo(url="https://loook.uz"))],
         [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
@@ -272,12 +271,11 @@ async def check_item(message: types.Message):
 
 
 
-info_item = {}
 @dp.callback_query()
 async def update_item(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     user_data[user_id]["holat"] = "update_item"
-    info_button, text = callback.data.split("_")
+    info_button, name = callback.data.split("_")
     count = user_data[user_id]["counter"][0]
     price = user_data[user_id]["counter"][1]
 
@@ -287,26 +285,28 @@ async def update_item(callback: types.CallbackQuery):
         if count > 1:
             count -= 1
     elif info_button == "basket":
-        if text in user_data[user_id]["basket"]:
-            user_data[user_id]["basket"][text] += count
+        if name in user_data[user_id]["basket"]:
+            user_data[user_id]["basket"][name] += count
+            user_data[user_id]["next_menu"] = "next_menu"
         else:
-            user_data[user_id]["basket"][text] = count
+            user_data[user_id]["basket"][name] = count
+            user_data[user_id]["next_menu"] = "next_menu"
 
     # ✅ Yangilangan qiymatni saqlash
     user_data[user_id]["counter"] = [count, price]
 
     button = [
-        [types.InlineKeyboardButton(text="➖", callback_data=f"minus_{text}"),
-         types.InlineKeyboardButton(text=f"{count}", callback_data=f"count_{text}"),
-         types.InlineKeyboardButton(text="➕", callback_data=f"plus_{text}")],
-        [types.InlineKeyboardButton(text="📥 Savatga qo'shish", callback_data=f"basket_{text}")],
+        [types.InlineKeyboardButton(text="➖", callback_data=f"minus_{name}"),
+         types.InlineKeyboardButton(text=f"{count}", callback_data=f"count_{name}"),
+         types.InlineKeyboardButton(text="➕", callback_data=f"plus_{name}")],
+        [types.InlineKeyboardButton(text="📥 Savatga qo'shish", callback_data=f"basket_{name}")],
     ]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
 
     caption_text = (
-        f"{item_info[text][0]}\n"
-        f"{item_info[text][-1]}\n\n"
-        f"{item_info[text][0]}: {price} x {count} = {price * count}\n"
+        f"{item_info[name][0]}\n"
+        f"{item_info[name][-1]}\n\n"
+        f"{item_info[name][0]}: {price} x {count} = {price * count}\n"
         f"Umumiy: {price * count} UZS")
     caption_text += f"\n\u200b"
     print(user_data[user_id]["basket"])
@@ -320,11 +320,22 @@ async def update_item(callback: types.CallbackQuery):
 
 async def basket(message: types.Message):
     user_id = message.from_user.id
-    result = user_data[user_id]["basket"]
-    print(result)
-
-
-
+    result = user_data[user_id]["basket"] # {item_name:count}
+    if result:
+        pass
+    else:
+        button = [
+            [types.KeyboardButton(text="⬅️ Orqaga")]
+        ]
+        but = [
+            [types.InlineKeyboardButton(text="🔄 Tozalash", callback_data=f"clear"),]
+        ]
+        key = types.InlineKeyboardMarkup(inline_keyboard=but,)
+        keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+        await message.answer("Savat:", reply_markup=keyboard)
+        await message.answer("Hozircha savatingiz bo'sh", reply_markup=keyboard)
+        await message.answer("Buyurtmani davom ettirish", reply_markup=key)
+        print(user_data)
 
 
 
@@ -335,4 +346,3 @@ async def main():
     await dp.start_polling(bot)
 
 asyncio.run(main())
-
