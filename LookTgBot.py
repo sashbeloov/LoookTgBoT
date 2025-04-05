@@ -38,6 +38,8 @@ async def handnle_text(message: types.Message):
         await burgers(message)
     elif message.text in item_info:
         await check_item(message)
+    elif message.text == "📥 Savat":
+        await basket(message)
 
 
     elif message.text == "⬅️ Orqaga":
@@ -176,6 +178,8 @@ async def delivery(message: types.Message):
 async def check_branch(message: types.Message):
     user_id = message.from_user.id
     user_data[user_id]["holat"] = "check_branch"
+    if "basket" not in user_data[user_id]:
+        user_data[user_id]["basket"] = {}
     button = [
         [types.KeyboardButton(text="Interaktiv menu",web_app=types.WebAppInfo(url="https://loook.uz"))],
         [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
@@ -232,7 +236,6 @@ item_info = {
     "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
 }
 
-# * Bu funksiya oraqali barch tugmalarning rasmi,nomi,narxi va shunga oxshash ma'lumotlar chiqib keladi * #
 async def check_item(message: types.Message):
     user_id = message.from_user.id
     user_data[user_id]["holat"] = "check_item"
@@ -267,6 +270,8 @@ async def check_item(message: types.Message):
     else:
         print("Mahsulot topilmadi")
 
+
+
 info_item = {}
 @dp.callback_query()
 async def update_item(callback: types.CallbackQuery):
@@ -276,26 +281,16 @@ async def update_item(callback: types.CallbackQuery):
     count = user_data[user_id]["counter"][0]
     price = user_data[user_id]["counter"][1]
 
-    # Tovarning soni,narxi va nomi saqlandi
-    total_price = price * count
-    user_data[user_id]["basket"] = [text, count, total_price]
-
     if info_button == "plus":
         count += 1
     elif info_button == "minus":
         if count > 1:
             count -= 1
     elif info_button == "basket":
-        if "end_basket" not in info_item:
-            info_item[user_id] = user_data[user_id]["basket"]
-            print(info_item)
+        if text in user_data[user_id]["basket"]:
+            user_data[user_id]["basket"][text] += count
         else:
-            if text in info_item[user_id]:
-                info_item[user_id][1] += user_data[user_id]["basket"][1]
-                info_item[user_id][1] += user_data[user_id]["basket"][2]
-            else:
-                info_item[user_id][1] = user_data[user_id]["basket"][1]
-                info_item[user_id][1] = user_data[user_id]["basket"][2]
+            user_data[user_id]["basket"][text] = count
 
     # ✅ Yangilangan qiymatni saqlash
     user_data[user_id]["counter"] = [count, price]
@@ -313,9 +308,8 @@ async def update_item(callback: types.CallbackQuery):
         f"{item_info[text][-1]}\n\n"
         f"{item_info[text][0]}: {price} x {count} = {price * count}\n"
         f"Umumiy: {price * count} UZS")
-    caption_text += f"\n\u200b"  # Bu — “Zero-width space” (ko‘rinmas belgi). Telegram caption'ni yangilangan deb hisoblaydi,
-    # lekin foydalanuvchiga hech narsa ko‘rinmaydi.
-
+    caption_text += f"\n\u200b"
+    print(user_data[user_id]["basket"])
     try:
         await callback.message.edit_caption(
             caption=caption_text,
@@ -324,34 +318,21 @@ async def update_item(callback: types.CallbackQuery):
         print(f"Xato: {e}")
 
 
+async def basket(message: types.Message):
+    user_id = message.from_user.id
+    result = user_data[user_id]["basket"]
+    print(result)
+
+
+
+
+
+
+
+
 async def main():
     print('The bot is running...')
     await dp.start_polling(bot)
 
 asyncio.run(main())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
