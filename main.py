@@ -6,7 +6,7 @@ import asyncio
 from data_dict import lang_data, uz, en, ru
 from random import randint
 
-TOKEN = ""
+TOKEN = "7611119839:AAHdiDZ9-olh2EldSCKdE6ktewlhFYvIs3M"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -50,10 +50,9 @@ async def handle_text(message: types.Message):
         await ask_phone(message)
     elif "phone" in user_data[user_id]:
         await check_phone(message)
-    # elif int(message.text) == user_data[user_id]["ver_code"]:
-    #     pass
-    elif ("holat_reviews" in user_data[user_id]) or ("holateng" in user_data[user_id]) or ("holatru" in user_data[user_id]):
-        await check_reviews(message)
+    elif int(message.text) == user_data[user_id]["ver_code"]:
+        pass
+
 
 
 @dp.message(Command("start"))
@@ -247,7 +246,6 @@ async def reviews(message: types.Message,):
     user_id = message.from_user.id
     try:
         if message.text in uz:
-            user_data[user_id]["holat_reviews"] = "holat_reviews"
             user_data[user_id]['holat'] = "reviews"
             user_data[user_id]["language"] = "uz"
             lang = user_data[user_id]["language"]
@@ -491,7 +489,7 @@ async def check_lang(message: types.Message):
             ]
             keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
             await message.answer(f"{en[6]}", reply_markup=keyboard)
-            print(user_data)
+            print(5, user_data)
         elif message.text in ru:
             button = [
                 [types.KeyboardButton(text=f"{ru[1]}")],
@@ -503,49 +501,6 @@ async def check_lang(message: types.Message):
             print(user_data)
     except Exception as e:
         print(f"check_lang:Xatolik yuz berdi: {e}")
-
-
-
-async def check_reviews(message: types.Message):
-    user_id = message.from_user.id
-    try:
-        if "user_reviews" not in user_data[user_id]:
-            print(23)
-            lang = user_data[user_id]["language"]
-            if lang == "uz":
-                lang = "1"
-                res = lang_data[lang]
-                await message.answer(f"{res[0]}")
-                user_data[user_id]["user_reviews"] = "user_reviews"
-                await start(message)
-            elif lang == "en":
-                print(24)
-                lang = "2"
-                res = lang_data[lang]
-                await message.answer(f"{res[0]}")
-                user_data[user_id]["user_reviews_eng"] = "user_reviews_eng"
-                button = [
-                    [types.KeyboardButton(text=f"{en[1]}")],
-                    [types.KeyboardButton(text=f"{en[2]}"), types.KeyboardButton(text=f"{en[3]}")],
-                    [types.KeyboardButton(text=f"{en[4]}"), types.KeyboardButton(text=f"{en[5]}")]
-                ]
-                keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
-                await message.answer(f"{en[6]}", reply_markup=keyboard)
-            elif lang == "ru":
-                print(25)
-                lang = "3"
-                res = lang_data[lang]
-                await message.answer(f"{res[0]}")
-                user_data[user_id]["user_reviews_rus"] = "user_reviews_rus"
-                button = [
-                    [types.KeyboardButton(text=f"{ru[1]}")],
-                    [types.KeyboardButton(text=f"{ru[2]}"), types.KeyboardButton(text=f"{ru[3]}")],
-                    [types.KeyboardButton(text=f"{ru[4]}"), types.KeyboardButton(text=f"{ru[5]}")]
-                        ]
-                keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
-                await message.answer(f"{ru[6]}", reply_markup=keyboard)
-    except Exception as e:
-        print(f"check_reviews:Xatolik yuz berdi: {e}")
 
 
 
@@ -573,6 +528,9 @@ async def checkback(message: types.Message):
             await check_lang(message)
         elif user_data[user_id]['holatru'] == "birthday":
             await setting_all(message)
+
+
+
 
 
 
