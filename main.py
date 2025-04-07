@@ -6,7 +6,7 @@ import asyncio
 from data_dict import lang_data, uz, en, ru
 from random import randint
 
-TOKEN = "7611119839:AAHdiDZ9-olh2EldSCKdE6ktewlhFYvIs3M"
+TOKEN = ""
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
