@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import message
 import asyncio
 
-TOKEN = ""
+TOKEN = "8130717585:AAFHndHEijY6ZM89fH4WgMA5-GM3gkSOiQ0"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
@@ -600,6 +600,157 @@ item_info = {
     "Paket пакет "],
     "Beef longer": ["Beef longer", 30000, 1,"images/beef_longer.jpg",
     "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
+    "Chili Longer": ["Chili Longer", 35000, 1, "", "Chili Longer Burger - Chili sousli uzun burger!"],
+    "Bigger": ["Bigger", 37000, 1, "", "Bigger Burger - katta va qarsildoq burger!"],
+    "Burger Cheese": ["Burger Cheese", 28000, 1, "", "Cheese Burger - Pishloqli burger!"],
+    "Chicky Burger": ["Chicky Burger", 29000, 1, "", "Tovuq go'shtidan tayyorlangan burger!"],
+    "Hamburger": ["Hamburger", 25000, 1, "", "Oddiy va mazali hamburger!"],
+    "Junior Burger": ["Junior Burger", 22000, 1, "", "Yoshlar uchun kichik burger!"],
+    "Longer": ["Longer", 33000, 1, "", "Uzun va katta burger!"],
+
+    "Dinner Meal (2normal, 1spicy)": ["Dinner Meal (2normal, 1spicy)", 45000, 1, "",
+                                      "2 ta normal va 1 ta achchiq tovuq bilan kechki ovqat!"],
+    "Chicken Normal": ["Chicken Normal", 40000, 1, "", "Normal tovuqli taom!"],
+    "Chicken Spicy": ["Chicken Spicy", 42000, 1, "", "Achchiq tovuqli taom!"],
+    "Dinner Meal Normal": ["Dinner Meal Normal", 46000, 1, "", "2 normal tovuq bilan kechki ovqat!"],
+    "Dinner Meal Spicy": ["Dinner Meal Spicy", 47000, 1, "", "2 achchiq tovuq bilan kechki ovqat!"],
+    "Mix meal": ["Mix meal", 44000, 1, "", "Normal va achchiq tovuq aralash taomi!"],
+    "Snack Meal Normal": ["Snack Meal Normal", 35000, 1, "", "Yengil ovqat: normal tovuq!"],
+    "Snack Meal Spicy": ["Snack Meal Spicy", 36000, 1, "", "Yengil ovqat: achchiq tovuq!"],
+    "12 chicken set spicy": ["12 chicken set spicy", 65000, 1, "", "12 dona achchiq tovuq seti!"],
+    "12 chicken set mix": ["12 chicken set mix", 64000, 1, "", "12 dona mix (normal va achchiq) tovuq seti!"],
+    "12 chicken set normal": ["12 chicken set normal", 62000, 1, "", "12 dona normal tovuq seti!"],
+    "Dinner Meal (2spicy, normal)": ["Dinner Meal (2spicy, normal)", 68000, 1, "",
+                                     "2 ta achchiq va 1 ta normal tovuq bilan kechki ovqat!"],
+    "Snack Meal(1normal, 1spicy)": ["Snack Meal(1normal, 1spicy)", 34000, 1, "",
+                                    "1 ta normal va 1 ta achchiq tovuq yengil ovqati!"],
+    "Mix meal (21spicy)": ["Mix meal (21spicy)", 69000, 1, "", "21 dona achchiq tovuq bilan aralash taom!"],
+
+    "Medovik": ["Medovik", 10000, 1, "", "Medovik torti – asalli torte!"],
+    "Chocotastic": ["Chocotastic", 12000, 1, "", "Shokoladli tort!"],
+    "Chocolate Souffle": ["Chocolate Souffle", 11000, 1, "", "Shokoladli soufle!"],
+    "Donuts Choco": ["Donuts Choco", 8000, 1, "", "Shokoladli donutlar!"],
+    "Donuts Strawberry": ["Donuts Strawberry", 8000, 1, "", "Qulupnayli donutlar!"],
+    "Red Wave": ["Red Wave", 9500, 1, "", "Qizil dalga – fruktoza torti!"],
+    "Sugar Chips": ["Sugar Chips", 6000, 1, "", "Shakar chipslari!"],
+    "Tello": ["Tello", 7000, 1, "", "Tello – maxsus shirinlik!"],
+
+    "Kids Menu Burger Boy": ["Kids Menu Burger Boy", 15000, 1, "", "Bolalar uchun burger, o'g'il bolalar uchun!"],
+    "Kids Menu Burger Girl": ["Kids Menu Burger Girl", 15000, 1, "", "Bolalar uchun burger, qizlar uchun!"],
+    "Kids Menu Spinner Boy": ["Kids Menu Spinner Boy", 18000, 1, "", "Bolalar uchun spinner, o'g'il bolalar uchun!"],
+    "Kids Menu Spinner Girl": ["Kids Menu Spinner Girl", 18000, 1, "", "Bolalar uchun spinner, qizlar uchun!"],
+    "Kids Burger": ["Kids Burger", 12000, 1, "", "Bolalar uchun kichik burger!"],
+    "Kids Juice": ["Kids Juice", 5000, 1, "", "Bolalar uchun mevali ichimlik!"],
+    "Mini spinner": ["Mini spinner", 15000, 1, "", "Bolalar uchun mini spinner!"],
+
+    "Pizza Supreme": ["Pizza Supreme", 45000, 1, "", "Pizza Supreme - eng katta pizza!"],
+    "Pizza Hawaiian": ["Pizza Hawaiian", 43000, 1, "", "Pizza Hawaiian - ananasli pizza!"],
+    "Pizza Margarita (30sm)": ["Pizza Margarita (30sm)", 42000, 1, "", "Pizza Margarita - klassik pizza!"],
+    "Pizza Pepperoni": ["Pizza Pepperoni", 44000, 1, "", "Pizza Pepperoni - pepperonili pizza!"],
+    "Pizza Spicy": ["Pizza Spicy", 45000, 1, "", "Pizza Spicy - achchiq pizza!"],
+    "Pizza Steak": ["Pizza Steak", 46000, 1, "", "Pizza Steak - bifshteksli pizza!"],
+    "Pizza Mix": ["Pizza Mix", 47000, 1, "", "Pizza Mix - aralash pizza!"],
+    "Pizza BBQ Chicken": ["Pizza BBQ Chicken", 48000, 1, "", "Pizza BBQ Chicken - BBQ sousli tovuqli pizza!"],
+
+    # Spinnerlar
+    "Twix Crispy Roll": ["Twix Crispy Roll", 30000, 1, ""],
+    "Twix Chicken Crispy Roll": ["Twix Chicken Crispy Roll", 30000, 1, ""],
+    "Spinner no sauce": ["Spinner no sauce", 25000, 1, ""],
+    "Duet Master": ["Duet Master", 35000, 1, ""],
+    "Smile Box": ["Smile Box", 30000, 1, ""],
+    "Spinner Salsa": ["Spinner Salsa", 32000, 1, ""],
+    "Spinner Snack": ["Spinner Snack", 28000, 1, ""],
+    "Spinner Super Charged": ["Spinner Super Charged", 38000, 1, ""],
+    "Spinner Tako": ["Spinner Tako", 36000, 1, ""],
+
+    # Salatlar
+    "O'yinchoq": ["O'yinchoq", 15000, 1, ""],
+    "Bread Pikelet": ["Bread Pikelet", 12000, 1, ""],
+    "Coleslaw": ["Coleslaw", 10000, 1, ""],
+    "Loook Salad": ["Loook Salad", 13000, 1, ""],
+    "Cheese 1 slice": ["Cheese 1 slice", 5000, 1, ""],
+
+    # Kombo
+    "Habits": ["Habits", 45000, 1, ""],
+    "Fully combo": ["Fully combo", 50000, 1, ""],
+    "Smile set": ["Smile set", 55000, 1, ""],
+
+    # Souslar
+    "Halapeno": ["Halapeno", 7000, 1, ""],
+    "Cheese Sauce": ["Cheese Sauce", 8000, 1, ""],
+    "Toco Sous": ["Toco Sous", 6000, 1, ""],
+    "Ketchup": ["Ketchup", 4000, 1, ""],
+    "Mayo 1 pot": ["Mayo 1 pot", 5000, 1, ""],
+    "Mix max": ["Mix max", 9000, 1, ""],
+    "Salsa": ["Salsa", 7500, 1, ""],
+
+    # Appetizers
+    "Piyozli halqalari": ["Piyozli halqalari", 15000, 1, ""],
+    "Big hot shots": ["Big hot shots", 17000, 1, ""],
+    "Rustic fries": ["Rustic fries", 13000, 1, ""],
+    "Chechevit soup": ["Chechevit soup", 10000, 1, ""],
+    "Cheese Fries": ["Cheese Fries", 16000, 1, ""],
+    "Cheese Nuggets": ["Cheese Nuggets", 14000, 1, ""],
+
+    # Ice Cream & Milkshake
+    "Milkshake (Strawberry)": ["Milkshake (Strawberry)", 22000, 1, ""],
+    "Chilly Ice (500g)": ["Chilly Ice (500g)", 25000, 1, ""],
+    "Chocolate Ice Cream": ["Chocolate Ice Cream", 18000, 1, ""],
+    "LoookFlurry Bingo": ["LoookFlurry Bingo", 26000, 1, ""],
+    "LoookFlurry Wafer": ["LoookFlurry Wafer", 27000, 1, ""],
+    "Strawberry Ice Cream": ["Strawberry Ice Cream", 19000, 1, ""],
+    "Milkshake Banana": ["Milkshake Banana", 23000, 1, ""],
+    "Milkshake Choco": ["Milkshake Choco", 23000, 1, ""],
+
+    # Ichimliklar
+    "Dinay": ["Dinay", 15000, 1, ""],
+    "Sprite разлив": ["Sprite разлив", 12000, 1, ""],
+    "Fanta разлив": ["Fanta разлив", 12000, 1, ""],
+    "Coca-Cola разлив": ["Coca-Cola разлив", 13000, 1, ""],
+    "Mineralka bezgaz": ["Mineralka bezgaz", 8000, 1, ""],
+    "Sok 1L (Ananas)": ["Sok 1L (Ananas)", 10000, 1, ""],
+    "Sok 1L (Apelsin)": ["Sok 1L (Apelsin)", 10000, 1, ""],
+    "Coca-Cola": ["Coca-Cola", 15000, 1, ""],
+    "Fanta": ["Fanta", 15000, 1, ""],
+    "Ice-Tea": ["Ice-Tea", 15000, 1, ""],
+    # "Mineralka bezgaz": ["Mineralka bezgaz", 8000, 1, ""],
+    "Sprite": ["Sprite", 15000, 1, ""],
+    "Sok 1L": ["Sok 1L", 10000, 1, ""],
+    "Issiq-Ichimliklar": ["Issiq-Ichimliklar", 18000, 1, ""],
+
+    # General (Asosiy Mahsulotlar)
+    "WINGS 5 PCS - STRIPS 8 PCS (MIX) (0.5kg +-)": ["WINGS 5 PCS - STRIPS 8 PCS (MIX) (0.5kg +-)", 35000, 1, ""],
+    "WINGS 10 PCS - STRIPS 16 PCS (MIX) (1kg +-)": ["WINGS 10 PCS - STRIPS 16 PCS (MIX) (1kg +-)", 70000, 1, ""],
+    "16 PCS STRIPS (0.5kg +-)": ["16 PCS STRIPS (0.5kg +-)", 33000, 1, ""],
+    "32 PCS STRIPS (1kg +-)": ["32 PCS STRIPS (1kg +-)", 65000, 1, ""],
+    "11 PCS WINGS (0.5kg +-)": ["11 PCS WINGS (0.5kg +-)", 30000, 1, ""],
+    "21 PCS WINGS (1kg +-)": ["21 PCS WINGS (1kg +-)", 58000, 1, ""],
+    "16 NORMAL/16 SPICY + 32 WING": ["16 NORMAL/16 SPICY + 32 WING", 75000, 1, ""],
+    "24 SPICY + 24 STRIPS": ["24 SPICY + 24 STRIPS", 72000, 1, ""],
+    "24 NORMAL + 12 STRIPS/12 WINGS": ["24 NORMAL + 12 STRIPS/12 WINGS", 72000, 1, ""],
+    "12 NORMAL/12 SPICY + 24 WING": ["12 NORMAL/12 SPICY + 24 WING", 65000, 1, ""],
+
+    # Tog'ora
+    "24 NORMAL + 24 STRIPS": ["24 NORMAL + 24 STRIPS", 70000, 1, ""],
+    "32 PIECE NORMAL + 32 WING": ["32 PIECE NORMAL + 32 WING", 100000, 1, ""],
+    "32 PIECE NORMAL + 32 STRIPS": ["32 PIECE NORMAL + 32 STRIPS", 100000, 1, ""],
+    "24 SPICY + 24 WING": ["24 SPICY + 24 WING", 75000, 1, ""],
+    "24 NORMAL + 24 WINGS": ["24 NORMAL + 24 WINGS", 75000, 1, ""],
+
+    # Vafli
+    "Gonkong konsuli": ["Gonkong konsuli", 25000, 1, ""],
+    "Gonkong muzqaymoq vaflisi": ["Gonkong muzqaymoq vaflisi", 27000, 1, ""],
+    "Belgiya bananli vaflisi": ["Belgiya bananli vaflisi", 30000, 1, ""],
+    "Belgiya mini vaflisi": ["Belgiya mini vaflisi", 28000, 1, ""],
+    "Lorenti Fondyu": ["Lorenti Fondyu", 32000, 1, ""],
+    "Belgiya shokoladli vaflisi": ["Belgiya shokoladli vaflisi", 31000, 1, ""],
+    "Vena vaflisi": ["Vena vaflisi", 27000, 1, ""],
+    "Vena shokoladli vaflisi": ["Vena shokoladli vaflisi", 30000, 1, ""],
+    "Belgiya qulupnayli vaflisi": ["Belgiya qulupnayli vaflisi", 32000, 1, ""],
+
+    # Ava Pizza
+    "Ava Pizza": ["Ava Pizza", 40000, 1, ""]
+
 }
 
 functions = {
