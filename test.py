@@ -5,7 +5,7 @@
 #
 # from pyexpat.errors import messages
 #
-# TOKEN = "7702041998:AAGYq7SjeufGnJQ4OFAr2zrzqVP7VyD6nCM"
+# TOKEN = ""
 #
 # bot = Bot(token=TOKEN)
 # dp = Dispatcher()
