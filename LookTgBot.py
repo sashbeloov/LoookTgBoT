@@ -3,35 +3,22 @@ from aiogram.filters import Command
 from aiogram.types import message
 import asyncio
 
-TOKEN = "8130717585:AAHQk6u8c-4ECbcsHzjUpp2iXTxi6b8cZ-c"
+TOKEN = ""
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 user_data = {}
+
 
 @dp.message()
 async def handnle_text(message: types.Message):
     user_id = message.from_user.id
     if user_id not in user_data or message.text == "/start" or message.text == "🗂 | Asosiy menu":
         await start(message)
-    elif message.text == "🛍 Buyurtma berish":
-        await order(message)
-    elif message.text == "⚙️ Sozlamalar":
-        await settings(message)
-    elif message.text == "ℹ️ Biz haqimizda":
-        await aboutus(message)
-    elif message.text == "📋 Mening buyurtmalarim":
-        await myorders(message)
-    elif message.text == "✍️Izoh qoldirish":
-        await revies(message)
-    elif message.text == "Olib ketish":
-        await take_away(message)
-    elif message.text == "Yetkazib berish":
-        await delivery(message)
+    elif message.text in functions:
+        await functions[message.text](message)
     elif message.text in list_city:
         await check_branch(message)
-    elif message.text == "🍔BURGERLAR":
-        await burgers(message)
     elif message.text in item_info:
         await check_item(message)
     elif message.text == "📥 Savat":
@@ -40,8 +27,7 @@ async def handnle_text(message: types.Message):
         if user_data[user_id]["choosed_menu"] == "🍔BURGERLAR":
             await burgers(message)
 
-
-
+    # "⬅️ Orqaga" ni tekshirish
     elif message.text == "⬅️ Orqaga":
         if user_data[user_id]["holat"] == "order" or user_data[user_id]["holat"] == "settings" or user_data[user_id]["holat"] == "aboutus" or user_data[user_id]["holat"] == "revies":
             await start(message)
@@ -51,11 +37,8 @@ async def handnle_text(message: types.Message):
             await check_branch(message)
         elif user_data[user_id]["holat"] == "check_item":
             await burgers(message)
-        elif user_data[user_id]["holat"] == "update_item":
+        if user_data[user_id]["holat"] in holatlar:
             await check_branch(message)
-
-
-
 
 
 @dp.message(Command("start"))
@@ -183,7 +166,7 @@ async def check_branch(message: types.Message):
     button = [
         [types.KeyboardButton(text="Interaktiv menu",web_app=types.WebAppInfo(url="https://loook.uz"))],
         [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
-        [types.KeyboardButton(text="Iftor set"), types.KeyboardButton(text="🍔BURGERLAR")],
+        [types.KeyboardButton(text="Aksiya"), types.KeyboardButton(text="🍔BURGERLAR")],
         [types.KeyboardButton(text="🍗TOVUQ"), types.KeyboardButton(text="🍰SHIRINLIKLAR")],
         [types.KeyboardButton(text="🧸BOLALAR MENYUSI"), types.KeyboardButton(text="🍕PIZZA")],
         [types.KeyboardButton(text="🌯SPINNERLAR"), types.KeyboardButton(text="🥗SALATLAR")],
@@ -202,7 +185,18 @@ async def check_branch(message: types.Message):
     await message.answer("Interaktiv menyudan buyurtma bering", reply_markup=key)
     print(user_data)
 
-list_city = ["Yangli yo'l", "Yunusobod","Maxim Gorkiy","Boulevard","Chilonzor","Beruniy"]
+
+async def aksiya(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "aksiya"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Duet master 2=3"), types.KeyboardButton(text="Bigger 2=3")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("aksiya \nMahsulotni tanlang:", reply_markup=keyboard)
+
 
 
 async def burgers(message: types.Message):
@@ -223,17 +217,239 @@ async def burgers(message: types.Message):
     await message.answer("🍔BURGERLAR\n🍔Burgerlar \nMahsulotni tanlang:", reply_markup=keyboard)
 
 
+async def tovuq(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "tovuq"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Dinner Meal (2normal, 1spicy)"), types.KeyboardButton(text="Chicken Normal")],
+        [types.KeyboardButton(text="Chicken Spicy"), types.KeyboardButton(text="Dinner Meal Normal")],
+        [types.KeyboardButton(text="Dinner Meal Spicy"), types.KeyboardButton(text="Mix meal")],
+        [types.KeyboardButton(text="Snack Meal Normal"), types.KeyboardButton(text="Snack Meal Spicy")],
+        [types.KeyboardButton(text="12 chicken set spicy"), types.KeyboardButton(text="12 chicken set mix")],
+        [types.KeyboardButton(text="12 chicken set normal"), types.KeyboardButton(text="Dinner Meal (2spicy, normal)")],
+        [types.KeyboardButton(text="Snack Meal(1normal, 1spicy)"), types.KeyboardButton(text="Mix meal (21spicy)")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🧸BOLALAR MENYUSI\b🧸Bolalar menyusi \nMahsulotni tanlang:", reply_markup=keyboard)
 
-item_info = {
-    "Twins burger mol go'shti":["Twins burger mol go'shti",30000,1,"images/twins-goshtli.jpg",
-    "Mol go‘shtli Twins-Burger – ikkita shirali mol go‘shtli burger bir setda! Tanlangan mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Haqiqiy go‘shtsevarlar uchun! "],
-    "Twins burger tovuqli":["Twins burger tovuqli",39000,1,"images/twins-tovuqli.jpg",
-    "Tovuqli Twins-Burger – bitta emas, ikkita qarsildoq tovuqli burger! Tillarang panirlangan yumshoq tovuq go‘shti, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Tovuqni sevuvchilar uchun ideal tanlov! "],
-    "Paket": ["Paket", 2000, 1,"images/paket.jpg",
-    "Paket пакет "],
-    "Beef longer": ["Beef longer", 30000, 1,"images/beef_longer.jpg",
-    "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
-}
+
+async def candies(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "candies"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Medovik"), types.KeyboardButton(text="Chocotastic")],
+        [types.KeyboardButton(text="Chocolate Souffle"), types.KeyboardButton(text="Donuts Choco")],
+        [types.KeyboardButton(text="Donuts Strawberry"), types.KeyboardButton(text="Red Wave")],
+        [types.KeyboardButton(text="Sugar Chips"), types.KeyboardButton(text="Tello")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🍰SHIRINLIKLAR\n🍰Shiriliklar \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+
+async def kids(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "kids"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Kids Menu Burger Boy"), types.KeyboardButton(text="Kids Menu Burger Girl")],
+        [types.KeyboardButton(text="Kids Menu Spinner Boy"), types.KeyboardButton(text="Kids Menu Spinner Girl")],
+        [types.KeyboardButton(text="Kids Burger"), types.KeyboardButton(text="Kids Juice")],
+        [types.KeyboardButton(text="Mini spinner")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🧸BOLALAR MENYUSI\b🧸Bolalar menyusi \nMahsulotni tanlang:", reply_markup=keyboard)
+
+
+
+
+async def pizza(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "pizza"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Pizza Supreme"), types.KeyboardButton(text="Pizza Hawaiian")],
+        [types.KeyboardButton(text="Pizza Margarita (30sm)"), types.KeyboardButton(text="Pizza Pepperoni")],
+        [types.KeyboardButton(text="Pizza Spicy"), types.KeyboardButton(text="Pizza Steak")],
+        [types.KeyboardButton(text="Pizza Mix"), types.KeyboardButton(text="Pizza BBQ Chicken")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🍕PIZZA\n🍕PIZZA \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+async def spinner(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "spinner"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Twix Crispy Roll"), types.KeyboardButton(text="Twix Chicken Crispy Roll")],
+        [types.KeyboardButton(text="Spinner no sauce"), types.KeyboardButton(text="Duet Master")],
+        [types.KeyboardButton(text="Smile Box"), types.KeyboardButton(text="Spinner Salsa")],
+        [types.KeyboardButton(text="Spinner Snack"), types.KeyboardButton(text="Spinner Super Charged")],
+        [types.KeyboardButton(text="Spinner Tako")]
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🌯SPINNERLAR\n🌯SPINNERLAR \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+async def salat(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "salat"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="O'yinchoq"), types.KeyboardButton(text="Bread Pikelet")],
+        [types.KeyboardButton(text="Coleslaw"), types.KeyboardButton(text="Loook Salad")],
+        [types.KeyboardButton(text="Cheese 1 slice")]
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🥗SALATLAR\n🥗SALATLAR \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+async def kombo(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "kombo"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Habits"), types.KeyboardButton(text="Fully combo")],
+        [types.KeyboardButton(text="Smile set")]
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🥤🍟KOMBO\n🥤🍟KOMBO \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+async def souse(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "souse"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Halapeno"), types.KeyboardButton(text="Cheese Sauce")],
+        [types.KeyboardButton(text="Toco Sous"),types.KeyboardButton(text="Ketchup")],
+        [types.KeyboardButton(text="Mayo 1 pot"),types.KeyboardButton(text="Mix max")],
+        [types.KeyboardButton(text="Salsa")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🍅SAUSE\n🍅SAUSE \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+async def appitizer(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "appitizer"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Piyozli halqalari"), types.KeyboardButton(text="Big hot shots")],
+        [types.KeyboardButton(text="Rustic fries"),types.KeyboardButton(text="Chechevit soup")],
+        [types.KeyboardButton(text="Cheese Fries"),types.KeyboardButton(text="Cheese Nuggets")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🍟APPETIZERS\n🍟APPETIZERS \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+async def ice_cream(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "ice_cream"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Milkshake (Strawberry)"), types.KeyboardButton(text="Chilly Ice (500g)")],
+        [types.KeyboardButton(text="Chocolate Ice Cream"),types.KeyboardButton(text="LoookFlurry Bingo")],
+        [types.KeyboardButton(text="LoookFlurry Wafer"),types.KeyboardButton(text="Strawberry Ice Cream")],
+        [types.KeyboardButton(text="Milkshake Banana"),types.KeyboardButton(text="Milkshake Choco")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🍦🥛ICE CREAM & MILKSHAKE\n🍦🥛ICE CREAM & MILKSHAKE \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+async def drinks(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "drinks"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Dinay"), types.KeyboardButton(text="Sprite разлив")],
+        [types.KeyboardButton(text="Fante разлив"),types.KeyboardButton(text="Coca-Cola разлив")],
+        [types.KeyboardButton(text="Mineralka bezgaz"),types.KeyboardButton(text="Sok 1L (Ananas)")],
+        [types.KeyboardButton(text="Sok 1L (apelsin)"),types.KeyboardButton(text="Coca-Cola")],
+        [types.KeyboardButton(text="Fanta"),types.KeyboardButton(text="Ice-Tea")],
+        [types.KeyboardButton(text="Mineralka bezgaz"),types.KeyboardButton(text="Sprite")],
+        [types.KeyboardButton(text="Sok 1L "),types.KeyboardButton(text="Issiq-Ichimliklar")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("🥤ICHIMLIKLAR\n🥤ICHIMLIKLAR \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+async def general(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "general"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="WINGS 5 PCS - STRIPS 8 PCS (MIX) (0.5kg +-)"), types.KeyboardButton(text="WINGS 10 PCS - STRIPS 16 PCS (MIX) (1kg +-)")],
+        [types.KeyboardButton(text="16 PCS STRIPS (0.5kg +-)"),types.KeyboardButton(text="32 PCS STRIPS (1kg +-)")],
+        [types.KeyboardButton(text="11 PCS WINGS (0.5kg +-)"),types.KeyboardButton(text="21 PCS WINGS (1kg +-)")],
+        [types.KeyboardButton(text="16 NORMAL/16 SPICY + 32 WING"),types.KeyboardButton(text="24 SPICY + 24 STRIPS")],
+        [types.KeyboardButton(text="24 SPICY + 24 STRIPS"),types.KeyboardButton(text="12 NORMAL/12 SPICY + 24 WING")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("GENERAL\nGENERAL \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+async def togora(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "togora"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="24 NORMAL + 24 STRIPS"), types.KeyboardButton(text="32 PIECE NORMAL + 32 WING")],
+        [types.KeyboardButton(text="32 PIECE NORMAL + 32 STRIPS"),types.KeyboardButton(text="24 SPICY + 24 WING")],
+        [types.KeyboardButton(text="24 NORMAL + 24 WINGS")]
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("TOG'ORA\nTOG'ORA \nMahsulotni tanlang::", reply_markup=keyboard)
+
+async def vafli(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "vafli"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+        [types.KeyboardButton(text="Gonkong konsuli"), types.KeyboardButton(text="Gonkong muzqaymoq vaflisi")],
+        [types.KeyboardButton(text="Belgiya bananli vaflisi"), types.KeyboardButton(text="Belgiya mini vaflisi")],
+        [types.KeyboardButton(text="Lorenti Fondyu"), types.KeyboardButton(text="Belgiya shokoladli vaflisi")],
+        [types.KeyboardButton(text="Vena vaflisi"), types.KeyboardButton(text="Vena shokoladli vaflisi")],
+        [types.KeyboardButton(text="Belgiya qulupnayli vaflisi")]
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("VAFLI\nVAFLI \nMahsulotni tanlang::", reply_markup=keyboard)
+
+
+
+async def ava_pizza(message: types.Message):
+    user_id = message.from_user.id
+    user_data[user_id]["holat"] = "ava_pizza"
+    user_data[user_id]["choosed_menu"] = message.text
+    button = [
+        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+    await message.answer("AVA Pizza\nMahsulotni tanlang::", reply_markup=keyboard)
+
 
 async def check_item(message: types.Message):
     user_id = message.from_user.id
@@ -370,6 +586,47 @@ async def basket(message: types.Message):
         print(user_data)
 
 
+
+list_city = ["Yangli yo'l", "Yunusobod","Maxim Gorkiy","Boulevard","Chilonzor","Beruniy"]
+
+holatlar = {"update_item", "aksiya", "tovuq", "candies", "kids", "pizza", "spinner", "salat", "kombo", "souse", "appitizer", "ice_cream", "drinks", "general", "togora", "vafli", "ava_pizza"}
+
+item_info = {
+    "Twins burger mol go'shti":["Twins burger mol go'shti",30000,1,"images/twins-goshtli.jpg",
+    "Mol go‘shtli Twins-Burger – ikkita shirali mol go‘shtli burger bir setda! Tanlangan mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Haqiqiy go‘shtsevarlar uchun! "],
+    "Twins burger tovuqli":["Twins burger tovuqli",39000,1,"images/twins-tovuqli.jpg",
+    "Tovuqli Twins-Burger – bitta emas, ikkita qarsildoq tovuqli burger! Tillarang panirlangan yumshoq tovuq go‘shti, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Tovuqni sevuvchilar uchun ideal tanlov! "],
+    "Paket": ["Paket", 2000, 1,"images/paket.jpg",
+    "Paket пакет "],
+    "Beef longer": ["Beef longer", 30000, 1,"images/beef_longer.jpg",
+    "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
+}
+
+functions = {
+    "🛍 Buyurtma berish": order,
+    "⚙️ Sozlamalar": settings,
+    "ℹ️ Biz haqimizda": aboutus,
+    "📋 Mening buyurtmalarim": myorders,
+    "✍️Izoh qoldirish": revies,
+    "Olib ketish": take_away,
+    "Yetkazib berish": delivery,
+    "🍔BURGERLAR": burgers,
+    "🍗TOVUQ": tovuq,
+    "🍰SHIRINLIKLAR": candies,
+    "🧸BOLALAR MENYUSI": kids,
+    "🍕PIZZA": pizza,
+    "🌯SPINNERLAR": spinner,
+    "🥗SALATLAR": salat,
+    "🥤🍟KOMBO": kombo,
+    "🍅SAUSE": souse,
+    "🍟APPETIZERS": appitizer,
+    "🍦🥛ICE CREAM & MILKSHAKE": ice_cream,
+    "🥤ICHIMLIKLAR": drinks,
+    "GENERAL": general,
+    "TOG'ORA": togora,
+    "VAFLI": vafli,
+    "AVA Pizza": ava_pizza
+}
 
 
 
