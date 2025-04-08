@@ -2,8 +2,9 @@ from aiogram import types, Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import message
 import asyncio
+from full_info_item import list_city,holatlar,item_info
 
-TOKEN = "8130717585:AAFHndHEijY6ZM89fH4WgMA5-GM3gkSOiQ0"
+TOKEN = "8130717585:AAERFhrI73472EAxFz9ePz1B6Jo7pE0znn8"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
@@ -23,9 +24,9 @@ async def handnle_text(message: types.Message):
         await check_item(message)
     elif message.text == "📥 Savat":
         await basket(message)
-    elif "next_menu" in user_data[user_id]:
-        if user_data[user_id]["choosed_menu"] == "🍔BURGERLAR":
-            await burgers(message)
+    # elif "next_menu" in user_data[user_id]:
+    #     if user_data[user_id]["choosed_menu"] == "🍔BURGERLAR":
+    #         await burgers(message)
 
     # "⬅️ Orqaga" ni tekshirish
     elif message.text == "⬅️ Orqaga":
@@ -37,8 +38,19 @@ async def handnle_text(message: types.Message):
             await check_branch(message)
         elif user_data[user_id]["holat"] == "check_item":
             await burgers(message)
-        if user_data[user_id]["holat"] in holatlar:
+        elif user_data[user_id]["holat"] == "basket_back":
             await check_branch(message)
+        elif user_data[user_id]["holat"] == "burgers":
+            await check_branch(message)
+        # elif user_data[user_id]["holat"] in holatlar:
+        #     await check_branch(message)
+        elif user_data[user_id]["holat"] == "kids":
+            await check_branch(message)
+        elif user_data[user_id]["holat"] == "pizza":
+            await check_branch(message)
+        elif user_data[user_id]["holat"] == "update_item":
+            await check_branch(message)
+
 
 
 @dp.message(Command("start"))
@@ -163,27 +175,49 @@ async def check_branch(message: types.Message):
     user_data[user_id]["holat"] = "check_branch"
     if "basket" not in user_data[user_id]:
         user_data[user_id]["basket"] = {}
-    button = [
-        [types.KeyboardButton(text="Interaktiv menu",web_app=types.WebAppInfo(url="https://loook.uz"))],
-        [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
-        [types.KeyboardButton(text="Aksiya"), types.KeyboardButton(text="🍔BURGERLAR")],
-        [types.KeyboardButton(text="🍗TOVUQ"), types.KeyboardButton(text="🍰SHIRINLIKLAR")],
-        [types.KeyboardButton(text="🧸BOLALAR MENYUSI"), types.KeyboardButton(text="🍕PIZZA")],
-        [types.KeyboardButton(text="🌯SPINNERLAR"), types.KeyboardButton(text="🥗SALATLAR")],
-        [types.KeyboardButton(text="🥤🍟KOMBO"), types.KeyboardButton(text="🍅SAUSE")],
-        [types.KeyboardButton(text="🍟APPETIZERS"), types.KeyboardButton(text="🍦🥛ICE CREAM & MILKSHAKE")],
-        [types.KeyboardButton(text="🥤ICHIMLIKLAR"), types.KeyboardButton(text="GENERAL")],
-        [types.KeyboardButton(text="TOG'ORA"), types.KeyboardButton(text="VAFLI")],
-        [types.KeyboardButton(text="AVA Pizza")],
-    ]
-    but = [
-        [types.InlineKeyboardButton(text="Interaktiv menu", url="https://loook.uz")] # url qoshish kerey
-    ]
-    key = types.InlineKeyboardMarkup(inline_keyboard=but, resize_keyboard=True)
-    keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
-    await message.answer("Kategoriyani tanlang", reply_markup=keyboard)
-    await message.answer("Interaktiv menyudan buyurtma bering", reply_markup=key)
-    print(user_data)
+        button = [
+            [types.KeyboardButton(text="Interaktiv menu",web_app=types.WebAppInfo(url="https://loook.uz"))],
+            [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+            [types.KeyboardButton(text="Aksiya"), types.KeyboardButton(text="🍔BURGERLAR")],
+            [types.KeyboardButton(text="🍗TOVUQ"), types.KeyboardButton(text="🍰SHIRINLIKLAR")],
+            [types.KeyboardButton(text="🧸BOLALAR MENYUSI"), types.KeyboardButton(text="🍕PIZZA")],
+            [types.KeyboardButton(text="🌯SPINNERLAR"), types.KeyboardButton(text="🥗SALATLAR")],
+            [types.KeyboardButton(text="🥤🍟KOMBO"), types.KeyboardButton(text="🍅SAUSE")],
+            [types.KeyboardButton(text="🍟APPETIZERS"), types.KeyboardButton(text="🍦🥛ICE CREAM & MILKSHAKE")],
+            [types.KeyboardButton(text="🥤ICHIMLIKLAR"), types.KeyboardButton(text="GENERAL")],
+            [types.KeyboardButton(text="TOG'ORA"), types.KeyboardButton(text="VAFLI")],
+            [types.KeyboardButton(text="AVA Pizza")],
+        ]
+        but = [
+            [types.InlineKeyboardButton(text="Interaktiv menu", url="https://loook.uz")] # url qoshish kerey
+        ]
+        key = types.InlineKeyboardMarkup(inline_keyboard=but, resize_keyboard=True)
+        keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+        await message.answer("Kategoriyani tanlang", reply_markup=keyboard)
+        await message.answer("Interaktiv menyudan buyurtma bering", reply_markup=key)
+        print(user_data)
+    else:
+        button = [
+            [types.KeyboardButton(text="Interaktiv menu", web_app=types.WebAppInfo(url="https://loook.uz"))],
+            [types.KeyboardButton(text="⬅️ Orqaga"), types.KeyboardButton(text="📥 Savat")],
+            [types.KeyboardButton(text="Aksiya"), types.KeyboardButton(text="🍔BURGERLAR")],
+            [types.KeyboardButton(text="🍗TOVUQ"), types.KeyboardButton(text="🍰SHIRINLIKLAR")],
+            [types.KeyboardButton(text="🧸BOLALAR MENYUSI"), types.KeyboardButton(text="🍕PIZZA")],
+            [types.KeyboardButton(text="🌯SPINNERLAR"), types.KeyboardButton(text="🥗SALATLAR")],
+            [types.KeyboardButton(text="🥤🍟KOMBO"), types.KeyboardButton(text="🍅SAUSE")],
+            [types.KeyboardButton(text="🍟APPETIZERS"), types.KeyboardButton(text="🍦🥛ICE CREAM & MILKSHAKE")],
+            [types.KeyboardButton(text="🥤ICHIMLIKLAR"), types.KeyboardButton(text="GENERAL")],
+            [types.KeyboardButton(text="TOG'ORA"), types.KeyboardButton(text="VAFLI")],
+            [types.KeyboardButton(text="AVA Pizza")],
+        ]
+        but = [
+            [types.InlineKeyboardButton(text="Interaktiv menu", url="https://loook.uz")]  # url qoshish kerey
+        ]
+        key = types.InlineKeyboardMarkup(inline_keyboard=but, resize_keyboard=True)
+        keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+        await message.answer("Kategoriyani tanlang", reply_markup=keyboard)
+        await message.answer("Interaktiv menyudan buyurtma bering", reply_markup=key)
+        print(user_data)
 
 
 async def aksiya(message: types.Message):
@@ -196,6 +230,7 @@ async def aksiya(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("aksiya \nMahsulotni tanlang:", reply_markup=keyboard)
+    print(user_data)
 
 
 
@@ -215,6 +250,8 @@ async def burgers(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🍔BURGERLAR\n🍔Burgerlar \nMahsulotni tanlang:", reply_markup=keyboard)
+    print(user_data)
+
 
 
 async def tovuq(message: types.Message):
@@ -233,6 +270,8 @@ async def tovuq(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🧸BOLALAR MENYUSI\b🧸Bolalar menyusi \nMahsulotni tanlang:", reply_markup=keyboard)
+    print(user_data)
+
 
 
 async def candies(message: types.Message):
@@ -248,6 +287,8 @@ async def candies(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🍰SHIRINLIKLAR\n🍰Shiriliklar \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 
@@ -265,6 +306,9 @@ async def kids(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🧸BOLALAR MENYUSI\b🧸Bolalar menyusi \nMahsulotni tanlang:", reply_markup=keyboard)
+    print(user_data)
+
+
 
 
 
@@ -282,6 +326,8 @@ async def pizza(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🍕PIZZA\n🍕PIZZA \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 
@@ -299,6 +345,8 @@ async def spinner(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🌯SPINNERLAR\n🌯SPINNERLAR \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 
@@ -314,6 +362,8 @@ async def salat(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🥗SALATLAR\n🥗SALATLAR \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 
@@ -328,6 +378,8 @@ async def kombo(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🥤🍟KOMBO\n🥤🍟KOMBO \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 
@@ -344,6 +396,8 @@ async def souse(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🍅SAUSE\n🍅SAUSE \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 
@@ -356,9 +410,15 @@ async def appitizer(message: types.Message):
         [types.KeyboardButton(text="Piyozli halqalari"), types.KeyboardButton(text="Big hot shots")],
         [types.KeyboardButton(text="Rustic fries"),types.KeyboardButton(text="Chechevit soup")],
         [types.KeyboardButton(text="Cheese Fries"),types.KeyboardButton(text="Cheese Nuggets")],
+        [types.KeyboardButton(text="Fries (90g)"),types.KeyboardButton(text="Hot Shots")],
+        [types.KeyboardButton(text="Fries small"),types.KeyboardButton(text="Hot Wings 3pcs")],
+        [types.KeyboardButton(text="Strips 3pcs")],
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🍟APPETIZERS\n🍟APPETIZERS \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
+
 
 
 async def ice_cream(message: types.Message):
@@ -374,6 +434,8 @@ async def ice_cream(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🍦🥛ICE CREAM & MILKSHAKE\n🍦🥛ICE CREAM & MILKSHAKE \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 async def drinks(message: types.Message):
@@ -392,6 +454,8 @@ async def drinks(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("🥤ICHIMLIKLAR\n🥤ICHIMLIKLAR \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 async def general(message: types.Message):
@@ -408,6 +472,8 @@ async def general(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("GENERAL\nGENERAL \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 async def togora(message: types.Message):
@@ -422,6 +488,8 @@ async def togora(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("TOG'ORA\nTOG'ORA \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 async def vafli(message: types.Message):
     user_id = message.from_user.id
@@ -437,6 +505,7 @@ async def vafli(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("VAFLI\nVAFLI \nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
 
 
 
@@ -449,6 +518,8 @@ async def ava_pizza(message: types.Message):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
     await message.answer("AVA Pizza\nMahsulotni tanlang::", reply_markup=keyboard)
+    print(user_data)
+
 
 
 async def check_item(message: types.Message):
@@ -484,6 +555,7 @@ async def check_item(message: types.Message):
         user_data[user_id]["counter"] = [item_info[text][2], item_info[text][1]]
     else:
         print("Mahsulot topilmadi")
+    print(user_data)
 
 
 
@@ -503,7 +575,7 @@ async def update_item(callback: types.CallbackQuery):
     elif info_button == "basket":
         if name in user_data[user_id]["basket"]:
             user_data[user_id]["basket"][name] += count
-            user_data[user_id]["next_menu"] = "next_menu"
+            # user_data[user_id]["next_menu"] = "next_menu"
         else:
             user_data[user_id]["basket"][name] = count
             user_data[user_id]["next_menu"] = "next_menu"
@@ -532,11 +604,14 @@ async def update_item(callback: types.CallbackQuery):
             reply_markup=keyboard,)
     except Exception as e:
         print(f"Xato: {e}")
+    print(user_data)
+
 
 
 async def basket(message: types.Message):
     user_id = message.from_user.id
     result = user_data[user_id]["basket"] # {'Twins burger tovuqli': 1, 'Paket': 1}
+    user_data[user_id]["holat"] = "basket_back"
     print(result)
     choosed_items = ""
     all_total = 0
@@ -583,175 +658,9 @@ async def basket(message: types.Message):
         await message.answer("Savat:", reply_markup=keyboard)
         await message.answer("Hozircha savatingiz bo'sh", reply_markup=keyboard)
         await message.answer("Buyurtmani davom ettirish", reply_markup=key)
-        print(user_data)
+    print(user_data)
 
 
-
-list_city = ["Yangli yo'l", "Yunusobod","Maxim Gorkiy","Boulevard","Chilonzor","Beruniy"]
-
-holatlar = {"update_item", "aksiya", "tovuq", "candies", "kids", "pizza", "spinner", "salat", "kombo", "souse", "appitizer", "ice_cream", "drinks", "general", "togora", "vafli", "ava_pizza"}
-
-item_info = {
-    "Twins burger mol go'shti":["Twins burger mol go'shti",30000,1,"images/twins-goshtli.jpg",
-    "Mol go‘shtli Twins-Burger – ikkita shirali mol go‘shtli burger bir setda! Tanlangan mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Haqiqiy go‘shtsevarlar uchun! "],
-    "Twins burger tovuqli":["Twins burger tovuqli",39000,1,"images/twins-tovuqli.jpg",
-    "Tovuqli Twins-Burger – bitta emas, ikkita qarsildoq tovuqli burger! Tillarang panirlangan yumshoq tovuq go‘shti, yangi sabzavotlar va maxsus sous yumshoq bulochkada. Tovuqni sevuvchilar uchun ideal tanlov! "],
-    "Paket": ["Paket", 2000, 1,"images/paket.jpg",
-    "Paket пакет "],
-    "Beef longer": ["Beef longer", 30000, 1,"images/beef_longer.jpg",
-    "Beef longer Non (Longer), Mayonez, Salsa Sous, Piyoz, Sho'rbodring (Manirovanniy), Pomidor, Aysberg, Kotlet (Mol Go'sht)"],
-    "Chili Longer": ["Chili Longer", 35000, 1, "", "Chili Longer Burger - Chili sousli uzun burger!"],
-    "Bigger": ["Bigger", 37000, 1, "", "Bigger Burger - katta va qarsildoq burger!"],
-    "Burger Cheese": ["Burger Cheese", 28000, 1, "", "Cheese Burger - Pishloqli burger!"],
-    "Chicky Burger": ["Chicky Burger", 29000, 1, "", "Tovuq go'shtidan tayyorlangan burger!"],
-    "Hamburger": ["Hamburger", 25000, 1, "", "Oddiy va mazali hamburger!"],
-    "Junior Burger": ["Junior Burger", 22000, 1, "", "Yoshlar uchun kichik burger!"],
-    "Longer": ["Longer", 33000, 1, "", "Uzun va katta burger!"],
-
-    "Dinner Meal (2normal, 1spicy)": ["Dinner Meal (2normal, 1spicy)", 45000, 1, "",
-                                      "2 ta normal va 1 ta achchiq tovuq bilan kechki ovqat!"],
-    "Chicken Normal": ["Chicken Normal", 40000, 1, "", "Normal tovuqli taom!"],
-    "Chicken Spicy": ["Chicken Spicy", 42000, 1, "", "Achchiq tovuqli taom!"],
-    "Dinner Meal Normal": ["Dinner Meal Normal", 46000, 1, "", "2 normal tovuq bilan kechki ovqat!"],
-    "Dinner Meal Spicy": ["Dinner Meal Spicy", 47000, 1, "", "2 achchiq tovuq bilan kechki ovqat!"],
-    "Mix meal": ["Mix meal", 44000, 1, "", "Normal va achchiq tovuq aralash taomi!"],
-    "Snack Meal Normal": ["Snack Meal Normal", 35000, 1, "", "Yengil ovqat: normal tovuq!"],
-    "Snack Meal Spicy": ["Snack Meal Spicy", 36000, 1, "", "Yengil ovqat: achchiq tovuq!"],
-    "12 chicken set spicy": ["12 chicken set spicy", 65000, 1, "", "12 dona achchiq tovuq seti!"],
-    "12 chicken set mix": ["12 chicken set mix", 64000, 1, "", "12 dona mix (normal va achchiq) tovuq seti!"],
-    "12 chicken set normal": ["12 chicken set normal", 62000, 1, "", "12 dona normal tovuq seti!"],
-    "Dinner Meal (2spicy, normal)": ["Dinner Meal (2spicy, normal)", 68000, 1, "",
-                                     "2 ta achchiq va 1 ta normal tovuq bilan kechki ovqat!"],
-    "Snack Meal(1normal, 1spicy)": ["Snack Meal(1normal, 1spicy)", 34000, 1, "",
-                                    "1 ta normal va 1 ta achchiq tovuq yengil ovqati!"],
-    "Mix meal (21spicy)": ["Mix meal (21spicy)", 69000, 1, "", "21 dona achchiq tovuq bilan aralash taom!"],
-
-    "Medovik": ["Medovik", 10000, 1, "", "Medovik torti – asalli torte!"],
-    "Chocotastic": ["Chocotastic", 12000, 1, "", "Shokoladli tort!"],
-    "Chocolate Souffle": ["Chocolate Souffle", 11000, 1, "", "Shokoladli soufle!"],
-    "Donuts Choco": ["Donuts Choco", 8000, 1, "", "Shokoladli donutlar!"],
-    "Donuts Strawberry": ["Donuts Strawberry", 8000, 1, "", "Qulupnayli donutlar!"],
-    "Red Wave": ["Red Wave", 9500, 1, "", "Qizil dalga – fruktoza torti!"],
-    "Sugar Chips": ["Sugar Chips", 6000, 1, "", "Shakar chipslari!"],
-    "Tello": ["Tello", 7000, 1, "", "Tello – maxsus shirinlik!"],
-
-    "Kids Menu Burger Boy": ["Kids Menu Burger Boy", 15000, 1, "", "Bolalar uchun burger, o'g'il bolalar uchun!"],
-    "Kids Menu Burger Girl": ["Kids Menu Burger Girl", 15000, 1, "", "Bolalar uchun burger, qizlar uchun!"],
-    "Kids Menu Spinner Boy": ["Kids Menu Spinner Boy", 18000, 1, "", "Bolalar uchun spinner, o'g'il bolalar uchun!"],
-    "Kids Menu Spinner Girl": ["Kids Menu Spinner Girl", 18000, 1, "", "Bolalar uchun spinner, qizlar uchun!"],
-    "Kids Burger": ["Kids Burger", 12000, 1, "", "Bolalar uchun kichik burger!"],
-    "Kids Juice": ["Kids Juice", 5000, 1, "", "Bolalar uchun mevali ichimlik!"],
-    "Mini spinner": ["Mini spinner", 15000, 1, "", "Bolalar uchun mini spinner!"],
-
-    "Pizza Supreme": ["Pizza Supreme", 45000, 1, "", "Pizza Supreme - eng katta pizza!"],
-    "Pizza Hawaiian": ["Pizza Hawaiian", 43000, 1, "", "Pizza Hawaiian - ananasli pizza!"],
-    "Pizza Margarita (30sm)": ["Pizza Margarita (30sm)", 42000, 1, "", "Pizza Margarita - klassik pizza!"],
-    "Pizza Pepperoni": ["Pizza Pepperoni", 44000, 1, "", "Pizza Pepperoni - pepperonili pizza!"],
-    "Pizza Spicy": ["Pizza Spicy", 45000, 1, "", "Pizza Spicy - achchiq pizza!"],
-    "Pizza Steak": ["Pizza Steak", 46000, 1, "", "Pizza Steak - bifshteksli pizza!"],
-    "Pizza Mix": ["Pizza Mix", 47000, 1, "", "Pizza Mix - aralash pizza!"],
-    "Pizza BBQ Chicken": ["Pizza BBQ Chicken", 48000, 1, "", "Pizza BBQ Chicken - BBQ sousli tovuqli pizza!"],
-
-    # Spinnerlar
-    "Twix Crispy Roll": ["Twix Crispy Roll", 30000, 1, ""],
-    "Twix Chicken Crispy Roll": ["Twix Chicken Crispy Roll", 30000, 1, ""],
-    "Spinner no sauce": ["Spinner no sauce", 25000, 1, ""],
-    "Duet Master": ["Duet Master", 35000, 1, ""],
-    "Smile Box": ["Smile Box", 30000, 1, ""],
-    "Spinner Salsa": ["Spinner Salsa", 32000, 1, ""],
-    "Spinner Snack": ["Spinner Snack", 28000, 1, ""],
-    "Spinner Super Charged": ["Spinner Super Charged", 38000, 1, ""],
-    "Spinner Tako": ["Spinner Tako", 36000, 1, ""],
-
-    # Salatlar
-    "O'yinchoq": ["O'yinchoq", 15000, 1, ""],
-    "Bread Pikelet": ["Bread Pikelet", 12000, 1, ""],
-    "Coleslaw": ["Coleslaw", 10000, 1, ""],
-    "Loook Salad": ["Loook Salad", 13000, 1, ""],
-    "Cheese 1 slice": ["Cheese 1 slice", 5000, 1, ""],
-
-    # Kombo
-    "Habits": ["Habits", 45000, 1, ""],
-    "Fully combo": ["Fully combo", 50000, 1, ""],
-    "Smile set": ["Smile set", 55000, 1, ""],
-
-    # Souslar
-    "Halapeno": ["Halapeno", 7000, 1, ""],
-    "Cheese Sauce": ["Cheese Sauce", 8000, 1, ""],
-    "Toco Sous": ["Toco Sous", 6000, 1, ""],
-    "Ketchup": ["Ketchup", 4000, 1, ""],
-    "Mayo 1 pot": ["Mayo 1 pot", 5000, 1, ""],
-    "Mix max": ["Mix max", 9000, 1, ""],
-    "Salsa": ["Salsa", 7500, 1, ""],
-
-    # Appetizers
-    "Piyozli halqalari": ["Piyozli halqalari", 15000, 1, ""],
-    "Big hot shots": ["Big hot shots", 17000, 1, ""],
-    "Rustic fries": ["Rustic fries", 13000, 1, ""],
-    "Chechevit soup": ["Chechevit soup", 10000, 1, ""],
-    "Cheese Fries": ["Cheese Fries", 16000, 1, ""],
-    "Cheese Nuggets": ["Cheese Nuggets", 14000, 1, ""],
-
-    # Ice Cream & Milkshake
-    "Milkshake (Strawberry)": ["Milkshake (Strawberry)", 22000, 1, ""],
-    "Chilly Ice (500g)": ["Chilly Ice (500g)", 25000, 1, ""],
-    "Chocolate Ice Cream": ["Chocolate Ice Cream", 18000, 1, ""],
-    "LoookFlurry Bingo": ["LoookFlurry Bingo", 26000, 1, ""],
-    "LoookFlurry Wafer": ["LoookFlurry Wafer", 27000, 1, ""],
-    "Strawberry Ice Cream": ["Strawberry Ice Cream", 19000, 1, ""],
-    "Milkshake Banana": ["Milkshake Banana", 23000, 1, ""],
-    "Milkshake Choco": ["Milkshake Choco", 23000, 1, ""],
-
-    # Ichimliklar
-    "Dinay": ["Dinay", 15000, 1, ""],
-    "Sprite разлив": ["Sprite разлив", 12000, 1, ""],
-    "Fanta разлив": ["Fanta разлив", 12000, 1, ""],
-    "Coca-Cola разлив": ["Coca-Cola разлив", 13000, 1, ""],
-    "Mineralka bezgaz": ["Mineralka bezgaz", 8000, 1, ""],
-    "Sok 1L (Ananas)": ["Sok 1L (Ananas)", 10000, 1, ""],
-    "Sok 1L (Apelsin)": ["Sok 1L (Apelsin)", 10000, 1, ""],
-    "Coca-Cola": ["Coca-Cola", 15000, 1, ""],
-    "Fanta": ["Fanta", 15000, 1, ""],
-    "Ice-Tea": ["Ice-Tea", 15000, 1, ""],
-    # "Mineralka bezgaz": ["Mineralka bezgaz", 8000, 1, ""],
-    "Sprite": ["Sprite", 15000, 1, ""],
-    "Sok 1L": ["Sok 1L", 10000, 1, ""],
-    "Issiq-Ichimliklar": ["Issiq-Ichimliklar", 18000, 1, ""],
-
-    # General (Asosiy Mahsulotlar)
-    "WINGS 5 PCS - STRIPS 8 PCS (MIX) (0.5kg +-)": ["WINGS 5 PCS - STRIPS 8 PCS (MIX) (0.5kg +-)", 35000, 1, ""],
-    "WINGS 10 PCS - STRIPS 16 PCS (MIX) (1kg +-)": ["WINGS 10 PCS - STRIPS 16 PCS (MIX) (1kg +-)", 70000, 1, ""],
-    "16 PCS STRIPS (0.5kg +-)": ["16 PCS STRIPS (0.5kg +-)", 33000, 1, ""],
-    "32 PCS STRIPS (1kg +-)": ["32 PCS STRIPS (1kg +-)", 65000, 1, ""],
-    "11 PCS WINGS (0.5kg +-)": ["11 PCS WINGS (0.5kg +-)", 30000, 1, ""],
-    "21 PCS WINGS (1kg +-)": ["21 PCS WINGS (1kg +-)", 58000, 1, ""],
-    "16 NORMAL/16 SPICY + 32 WING": ["16 NORMAL/16 SPICY + 32 WING", 75000, 1, ""],
-    "24 SPICY + 24 STRIPS": ["24 SPICY + 24 STRIPS", 72000, 1, ""],
-    "24 NORMAL + 12 STRIPS/12 WINGS": ["24 NORMAL + 12 STRIPS/12 WINGS", 72000, 1, ""],
-    "12 NORMAL/12 SPICY + 24 WING": ["12 NORMAL/12 SPICY + 24 WING", 65000, 1, ""],
-
-    # Tog'ora
-    "24 NORMAL + 24 STRIPS": ["24 NORMAL + 24 STRIPS", 70000, 1, ""],
-    "32 PIECE NORMAL + 32 WING": ["32 PIECE NORMAL + 32 WING", 100000, 1, ""],
-    "32 PIECE NORMAL + 32 STRIPS": ["32 PIECE NORMAL + 32 STRIPS", 100000, 1, ""],
-    "24 SPICY + 24 WING": ["24 SPICY + 24 WING", 75000, 1, ""],
-    "24 NORMAL + 24 WINGS": ["24 NORMAL + 24 WINGS", 75000, 1, ""],
-
-    # Vafli
-    "Gonkong konsuli": ["Gonkong konsuli", 25000, 1, ""],
-    "Gonkong muzqaymoq vaflisi": ["Gonkong muzqaymoq vaflisi", 27000, 1, ""],
-    "Belgiya bananli vaflisi": ["Belgiya bananli vaflisi", 30000, 1, ""],
-    "Belgiya mini vaflisi": ["Belgiya mini vaflisi", 28000, 1, ""],
-    "Lorenti Fondyu": ["Lorenti Fondyu", 32000, 1, ""],
-    "Belgiya shokoladli vaflisi": ["Belgiya shokoladli vaflisi", 31000, 1, ""],
-    "Vena vaflisi": ["Vena vaflisi", 27000, 1, ""],
-    "Vena shokoladli vaflisi": ["Vena shokoladli vaflisi", 30000, 1, ""],
-    "Belgiya qulupnayli vaflisi": ["Belgiya qulupnayli vaflisi", 32000, 1, ""],
-
-    # Ava Pizza
-    "Ava Pizza": ["Ava Pizza", 40000, 1, ""]
-
-}
 
 functions = {
     "🛍 Buyurtma berish": order,
