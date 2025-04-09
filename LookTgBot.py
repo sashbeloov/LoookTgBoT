@@ -2,9 +2,9 @@ from aiogram import types, Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import message
 import asyncio
-from full_info_item import list_city,holatlar,item_info
+from full_info_item import list_city, holatlar, item_info
 
-TOKEN = "8130717585:AAERFhrI73472EAxFz9ePz1B6Jo7pE0znn8"
+TOKEN = ""
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
@@ -12,7 +12,7 @@ user_data = {}
 
 
 @dp.message()
-async def handnle_text(message: types.Message):
+async def handle_text(message: types.Message):
     user_id = message.from_user.id
     if user_id not in user_data or message.text == "/start" or message.text == "🗂 | Asosiy menu":
         await start(message)
@@ -563,6 +563,8 @@ async def check_item(message: types.Message):
 async def update_item(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     user_data[user_id]["holat"] = "update_item"
+    print("keldi shu joyga",callback.data)
+
     info_button, name = callback.data.split("_")
     count = user_data[user_id]["counter"][0]
     price = user_data[user_id]["counter"][1]
@@ -579,9 +581,6 @@ async def update_item(callback: types.CallbackQuery):
         else:
             user_data[user_id]["basket"][name] = count
             user_data[user_id]["next_menu"] = "next_menu"
-
-    # ✅ Yangilangan qiymatni saqlash
-    user_data[user_id]["counter"] = [count, price]
 
     button = [
         [types.InlineKeyboardButton(text="➖", callback_data=f"minus_{name}"),
@@ -615,52 +614,64 @@ async def basket(message: types.Message):
     print(result)
     choosed_items = ""
     all_total = 0
-    if result:
-        but = [
-            [types.InlineKeyboardButton(text="Buyurtmani tasdiqlash", callback_data="confirm")],
-            [types.InlineKeyboardButton(text="Buyurtmani davom ettirish", callback_data="continue")],
-            [types.InlineKeyboardButton(text="🔄 Tozalash", callback_data="clear")]
-        ]
-
-        for item_name, count in result.items():
-            summa = item_info[item_name][1]
-            summa *= count
-            all_total += summa
-            choosed_items += f"{item_name} x {count} = {summa} \n"
-
-            row = [
-                types.InlineKeyboardButton(text="➖", callback_data=f"minus_{item_name}"),
-                types.InlineKeyboardButton(text=f"{item_name}", callback_data="none"),
-                types.InlineKeyboardButton(text="➕", callback_data=f"plus_{item_name}")
+    try:
+        if result:
+            but = [
+                [types.InlineKeyboardButton(text="Buyurtmani tasdiqlash", callback_data="confirm")],
+                [types.InlineKeyboardButton(text="Buyurtmani davom ettirish", callback_data="continue")],
+                [types.InlineKeyboardButton(text="🔄 Tozalash", callback_data=f"clear_{result}")]
             ]
-            but.append(row)
 
-        inline_keyboard = types.InlineKeyboardMarkup(inline_keyboard=but)
+            for text, count in result.items():
+                summa = item_info[text][1]
+                summa *= count
+                all_total += summa
+                choosed_items += f"{text} x {count} = {summa} \n"
 
-        reply_buttons = [
-            [types.KeyboardButton(text="⬅️ Orqaga")]
-        ]
-        reply_keyboard = types.ReplyKeyboardMarkup(keyboard=reply_buttons, resize_keyboard=True)
+                row = [
+                    types.InlineKeyboardButton(text="➖", callback_data=f"minus_{text}"),
+                    types.InlineKeyboardButton(text=f"{text}", callback_data=f"text"),
+                    types.InlineKeyboardButton(text="➕", callback_data=f"plus_{text}")
+                ]
+                but.append(row)
 
-        await message.answer("Savat:", reply_markup=reply_keyboard)
-        await message.answer(f"{choosed_items}\n\nUmumiy: {all_total}", reply_markup=inline_keyboard)
+            in_keyboard = types.InlineKeyboardMarkup(inline_keyboard=but)
 
+            reply_buttons = [
+                [types.KeyboardButton(text="⬅️ Orqaga")]
+            ]
+            reply_keyboard = types.ReplyKeyboardMarkup(keyboard=reply_buttons, resize_keyboard=True)
 
-    else:
-        button = [
-            [types.KeyboardButton(text="⬅️ Orqaga")]
-        ]
-        but = [
-            [types.InlineKeyboardButton(text="🔄 Tozalash", callback_data=f"clear"),]
-        ]
-        key = types.InlineKeyboardMarkup(inline_keyboard=but,)
-        keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
-        await message.answer("Savat:", reply_markup=keyboard)
-        await message.answer("Hozircha savatingiz bo'sh", reply_markup=keyboard)
-        await message.answer("Buyurtmani davom ettirish", reply_markup=key)
-    print(user_data)
+            await message.answer("Savat:", reply_markup=reply_keyboard)
+            await message.answer(f"{choosed_items}\n\nUmumiy: {all_total}", reply_markup=in_keyboard)
 
 
+        else:
+            button = [
+                [types.KeyboardButton(text="⬅️ Orqaga")]
+            ]
+            but = [
+                [types.InlineKeyboardButton(text="🔄 Tozalash", callback_data=f"clear"),]
+            ]
+            key = types.InlineKeyboardMarkup(inline_keyboard=but,)
+            keyboard = types.ReplyKeyboardMarkup(keyboard=button, resize_keyboard=True)
+            await message.answer("Savat:", reply_markup=keyboard)
+            await message.answer("Hozircha savatingiz bo'sh", reply_markup=keyboard)
+            await message.answer("Buyurtmani davom ettirish", reply_markup=key)
+            print(user_data)
+    except Exception as e:
+        print(f"xato yuzga keldi: {e}")
+
+
+
+
+# @dp.callback_query()
+# async def clear_basket(callback: types.CallbackQuery):
+#     user_id = callback.from_user.id
+#     print(callback.data)
+    # if callback.data == "🔄 Tozalash":
+    #     basket_item = user_data[user_id]["basket"]  # {'Twins burger tovuqli': 1, 'Paket': 1}
+    #     print(basket_item)
 
 functions = {
     "🛍 Buyurtma berish": order,
